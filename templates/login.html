@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Portal do Locatário</title>
+
+    <style>
+
+        body{
+            background:#f2f2f2;
+            font-family: Arial;
+        }
+
+        .login-box{
+            width:350px;
+            background:white;
+            margin:100px auto;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h1{
+            text-align:center;
+            color:#333;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:20px;
+            background:#0066cc;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        button:hover{
+            background:#004999;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="login-box">
+
+    <h1>Portal do Locatário</h1>
+
+    <form method="POST">
+
+        <input type="text" name="usuario" placeholder="Usuário">
+
+        <input type="password" name="senha" placeholder="Senha">
+
+        <button type="submit">
+            Entrar
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

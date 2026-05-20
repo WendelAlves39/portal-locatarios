@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Administrativo</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .menu {
+            width: 240px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .menu h2 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .menu a:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .conteudo {
+            flex: 1;
+        }
+
+        .topo {
+            background: white;
+            padding: 22px 30px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .topo h1 {
+            margin: 0;
+        }
+
+        .topo p {
+            margin: 6px 0 0 0;
+            color: #666;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .cards-resumo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .numero {
+            margin-top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #004aad;
+        }
+
+        .acoes {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .botao {
+            display: inline-block;
+            background: #004aad;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .botao:hover {
+            background: #00347a;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .menu {
+                width: 100%;
+            }
+
+            .cards-resumo {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="menu">
+        <h2>Administração</h2>
+
+        <a href="/admin">🏠 Dashboard</a>
+        <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
+        <a href="/upload_boleto">📄 Enviar boleto</a>
+        <a href="/boletos_admin">📋 Boletos enviados</a>
+        <a href="#">⚙ Configurações</a>
+        <a href="/logout">🚪 Sair</a>
+    </aside>
+
+    <main class="conteudo">
+
+        <header class="topo">
+            <h1>Painel Administrativo</h1>
+            <p>Olá, {{ nome }}. Gerencie locatários, boletos e relatórios.</p>
+        </header>
+
+        <section class="container">
+
+            <div class="cards-resumo">
+                <div class="card">
+                    <h3>Locatários cadastrados</h3>
+                    <div class="numero">{{ total_locatarios }}</div>
+                </div>
+
+                <div class="card">
+                    <h3>Boletos enviados</h3>
+                    <div class="numero">{{ total_boletos }}</div>
+                </div>
+
+                <div class="card">
+                    <h3>Relatórios</h3>
+                    <div class="numero">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Ações rápidas</h2>
+
+                <div class="acoes">
+                    <a class="botao" href="/cadastro_locatario">Cadastrar locatário</a>
+                    <a class="botao" href="/upload_boleto">Enviar boleto</a>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

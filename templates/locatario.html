@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Portal do Locatário</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .menu {
+            width: 240px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 20px;
+        }
+
+        .menu h2 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .menu a:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .conteudo {
+            flex: 1;
+        }
+
+        .topo {
+            background: white;
+            padding: 22px 30px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .topo h1 {
+            margin: 0;
+        }
+
+        .topo p {
+            margin: 6px 0 0 0;
+            color: #666;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .cards-resumo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .card .numero {
+            margin-top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #004aad;
+        }
+
+        .secao-titulo {
+            margin-bottom: 15px;
+        }
+
+        .boleto {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 14px;
+        }
+
+        .boleto-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .boleto-info span {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .botao {
+            background: #004aad;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .botao:hover {
+            background: #00347a;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 8px;
+            background: #fff3cd;
+            color: #856404;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .status-pago {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-vencido {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-aberto {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .vazio {
+            color: #777;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .menu {
+                width: 100%;
+            }
+
+            .cards-resumo {
+                grid-template-columns: 1fr;
+            }
+
+            .boleto {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="menu">
+        <h2>Imobiliária</h2>
+
+        <a href="/locatario">🏠 Dashboard</a>
+        <a href="/locatario">📄 Boletos</a>
+        <a href="#">💰 Pagamentos</a>
+        <a href="#">📑 Relatórios</a>
+        <a href="#">⚙ Configurações</a>
+        <a href="/logout">🚪 Sair</a>
+    </aside>
+
+    <main class="conteudo">
+
+        <header class="topo">
+            <h1>Portal do Locatário</h1>
+            <p>Olá, {{ nome }}. Bem-vindo ao seu painel de boletos e pagamentos.</p>
+        </header>
+
+        <section class="container">
+
+            <div class="cards-resumo">
+                <div class="card">
+                    <h3>Boletos disponíveis</h3>
+                    <div class="numero">{{ boletos|length }}</div>
+                </div>
+
+                <div class="card">
+                    <h3>Em aberto</h3>
+                    <div class="numero">{{ boletos|length }}</div>
+                </div>
+
+                <div class="card">
+                    <h3>Pagos</h3>
+                    <div class="numero">0</div>
+                </div>
+            </div>
+
+            <h2 class="secao-titulo">Meus boletos</h2>
+
+            {% if boletos %}
+
+                {% for boleto in boletos %}
+
+                    <div class="card boleto">
+                        <div class="boleto-info">
+                            <strong>{{ boleto[0] }}</strong>
+                            <span>Valor: R$ {{ boleto[1] }}</span>
+                            <br>
+                            <span>Vencimento: {{ boleto[2] }}</span>
+                            <br>
+                            {% if boleto[3] == "Pago" %}
+
+    <span class="status status-pago">
+        🟢 Pago
+    </span>
+
+{% elif boleto[3] == "Vencido" %}
+
+    <span class="status status-vencido">
+        🔴 Vencido
+    </span>
+
+{% else %}
+
+    <span class="status status-aberto">
+        🟡 Em aberto
+    </span>
+
+{% endif %}
+                        </div>
+
+                        <a class="botao" href="/baixar_boleto/{{ boleto[0] }}" target="_blank">
+                            Abrir boleto
+                        </a>
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="card vazio">
+                    Nenhum boleto disponível no momento.
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

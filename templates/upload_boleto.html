@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar Boleto</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #0f172a;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .menu {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .menu h2 { margin-top: 0; }
+
+        .menu a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px;
+            border-radius: 9px;
+            margin-bottom: 8px;
+        }
+
+        .menu a:hover,
+        .menu .ativo {
+            background: #2563eb;
+            color: white;
+        }
+
+        .conteudo {
+            flex: 1;
+            padding: 35px;
+        }
+
+        .topo {
+            margin-bottom: 30px;
+        }
+
+        .topo h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .topo p {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            max-width: 700px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 18px;
+            background: white;
+        }
+
+        .botao {
+            background: #2563eb;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 9px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .botao:hover {
+            background: #1d4ed8;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="menu">
+        <h2>🏛 Administração</h2>
+
+        <a href="/admin">🏠 Dashboard</a>
+        <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
+        <a class="ativo" href="/upload_boleto">📄 Enviar boleto</a>
+        <a href="/boletos_admin">📋 Boletos enviados</a>
+        <a href="#">⚙ Configurações</a>
+        <a href="/logout">🚪 Sair</a>
+    </aside>
+
+    <main class="conteudo">
+
+        <div class="topo">
+            <h1>📄 Enviar Boleto</h1>
+            <p>Selecione o locatário, informe os dados financeiros e envie o PDF.</p>
+        </div>
+
+        <div class="card">
+{% with messages = get_flashed_messages() %}
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div style="
+                background:#d1fae5;
+                color:#065f46;
+                padding:14px;
+                border-radius:10px;
+                margin-bottom:20px;
+                font-weight:bold;
+            ">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endwith %}
+            <form method="POST" enctype="multipart/form-data">
+
+                <label>Locatário</label>
+                <select name="usuario_locatario" required>
+                    <option value="">Selecione um locatário</option>
+
+                    {% for locatario in locatarios %}
+                        <option value="{{ locatario[0] }}">
+                            {{ locatario[1] }} - {{ locatario[0] }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>Valor</label>
+                <input type="text" name="valor" placeholder="Ex: 850,00" required>
+
+                <label>Vencimento</label>
+                <input type="date" name="vencimento" required>
+
+                <label>Status</label>
+                <select name="status">
+                    <option value="Em aberto">Em aberto</option>
+                    <option value="Pago">Pago</option>
+                    <option value="Vencido">Vencido</option>
+                </select>
+
+                <label>Arquivo PDF do boleto</label>
+                <input type="file" name="arquivo" accept="application/pdf" required>
+
+                <button class="botao" type="submit">Enviar boleto</button>
+
+            </form>
+
+        </div>
+
+        <a class="voltar" href="/admin">← Voltar ao painel</a>
+
+    </main>
+
+</div>
+
+</body>
+</html>
