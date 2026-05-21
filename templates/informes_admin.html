@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Informes Enviados</title>
+<style>
+* { box-sizing: border-box; }
+body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
+.layout { display:flex; min-height:100vh; align-items:stretch; }
+.menu { width:250px; min-height:100vh; background:#0f172a; color:white; padding:25px 18px; flex-shrink:0; position:sticky; top:0; align-self:flex-start; }
+.menu h2 { margin-top:0; }
+.menu a { display:block; color:#cbd5e1; text-decoration:none; padding:13px; border-radius:9px; margin-bottom:8px; }
+.menu a:hover, .menu .ativo { background:#2563eb; color:white; }
+.conteudo { flex:1; padding:35px; }
+.topo { margin-bottom:30px; }
+.topo h1 { margin:0; font-size:34px; }
+.topo p { color:#64748b; margin-top:8px; }
+.card { background:white; padding:30px; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+input { width:100%; padding:14px; border:1px solid #d1d5db; border-radius:10px; font-size:15px; margin-bottom:18px; background:white; }
+.botao { display:inline-block; background:#2563eb; color:white; padding:10px 14px; border-radius:9px; border:none; text-decoration:none; font-weight:bold; cursor:pointer; }
+.botao:hover { background:#1d4ed8; }
+.botao-vermelho { background:#dc2626; }
+.botao-vermelho:hover { background:#b91c1c; }
+.msg { background:#d1fae5; color:#065f46; padding:14px; border-radius:10px; margin-bottom:20px; font-weight:bold; }
+table { width:100%; border-collapse:collapse; background:white; }
+th { background:#f1f5f9; text-align:left; padding:16px; color:#334155; }
+td { padding:16px; border-bottom:1px solid #e5e7eb; }
+
+.logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
+.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.menu a:hover { background:#ef3b39; color:white; }
+.menu .ativo { background:#2563eb; color:white; }
+.botao { background:#ef3b39 !important; }
+.botao:hover { background:#d92f2d !important; }
+.numero { color:#ef3b39 !important; }
+.voltar { color:#ef3b39 !important; }
+
+.tabela-scroll{
+    max-height:650px;
+    overflow-y:auto;
+    border-radius:12px;
+}
+
+th{
+    position:sticky;
+    top:0;
+    z-index:2;
+}
+
+@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%} table{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="menu">
+    <div class="logo-area">
+    <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
+</div>
+    <a href="/admin">🏠 Dashboard</a>
+    <a href="/cadastro_admin">👮 Cadastrar administrador</a>
+    <a href="/clientes_admin">👥 Clientes cadastrados</a>
+    <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
+    <a href="/upload_boleto">📄 Enviar boleto</a>
+    <a href="/importar_boletos">📥 Importar boletos</a>
+    <a href="/boletos_admin">📋 Boletos enviados</a>
+    <a href="/upload_informe">📑 Enviar informe</a>
+    <a href="/informes_admin">📚 Informes enviados</a>
+    <a href="/configuracoes">⚙ Configurações</a>
+    <a href="/logout">🚪 Sair</a>
+</aside>
+
+<main class="conteudo">
+    <div class="topo">
+        <h1>Informes enviados</h1>
+        <p>Consulte, abra ou exclua informes já cadastrados.</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="msg">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <form method="GET" action="/informes_admin">
+            <input type="text" name="busca" value="{{ busca }}" placeholder="Buscar por nome, CPF ou ano">
+            <button class="botao" type="submit">Buscar</button>
+            <a class="botao" href="/upload_informe">Enviar novo informe</a>
+        </form>
+    </div>
+
+    <div class="card">
+        {% if informes %}
+            <div class="tabela-scroll">
+    <table>
+                <thead>
+                    <tr>
+                        <th>Locatário</th>
+                        <th>CPF</th>
+                        <th>Ano</th>
+                        <th>Data envio</th>
+                        <th>Arquivo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for informe in informes %}
+                        <tr>
+                            <td>{{ informe[2] }}</td>
+                            <td>{{ informe[3] }}</td>
+                            <td>{{ informe[4] }}</td>
+                            <td>{{ informe[5] or '-' }}</td>
+                            <td>{{ informe[1] }}</td>
+                            <td>
+                                <a class="botao" href="/baixar_informe/{{ informe[0] }}" target="_blank">Abrir</a>
+                                <a class="botao botao-vermelho" href="/excluir_informe/{{ informe[0] }}" onclick="return confirm('Deseja realmente excluir este informe?')">Excluir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            Nenhum informe encontrado.
+        {% endif %}
+                </div>
+    </div>
+</main>
+</div>
+</body>
+</html>

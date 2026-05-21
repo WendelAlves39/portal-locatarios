@@ -1,160 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastrar Locatário</title>
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Cadastrar Locatário</title>
+<style>
+* { box-sizing: border-box; }
+body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
+.layout { display:flex; min-height:100vh; align-items:stretch; }
+.menu { width:250px; min-height:100vh; background:#0f172a; color:white; padding:25px 18px; flex-shrink:0; position:sticky; top:0; align-self:flex-start; }
+.menu h2 { margin-top:0; }
+.menu a { display:block; color:#cbd5e1; text-decoration:none; padding:13px; border-radius:9px; margin-bottom:8px; }
+.menu a:hover, .menu .ativo { background:#2563eb; color:white; }
+.conteudo { flex:1; padding:35px; }
+.topo { margin-bottom:30px; }
+.topo h1 { margin:0; font-size:34px; }
+.topo p { color:#64748b; margin-top:8px; }
+.card { background:white; padding:30px; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+input, select { width:100%; padding:14px; border:1px solid #d1d5db; border-radius:10px; font-size:15px; margin-bottom:18px; background:white; }
+label { display:block; margin-bottom:8px; font-weight:bold; }
+.botao { display:inline-block; background:#2563eb; color:white; padding:13px 20px; border-radius:9px; border:none; text-decoration:none; font-weight:bold; cursor:pointer; }
+.botao:hover { background:#1d4ed8; }
+.voltar { display:inline-block; margin-top:20px; color:#2563eb; text-decoration:none; font-weight:bold; }
+.msg { background:#d1fae5; color:#065f46; padding:14px; border-radius:10px; margin-bottom:20px; font-weight:bold; }
+.cards-resumo,.cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:25px; }
+.numero { font-size:32px; font-weight:bold; margin-top:12px; color:#2563eb; }
+table { width:100%; border-collapse:collapse; background:white; }
+th { background:#f1f5f9; text-align:left; padding:16px; color:#334155; }
+td { padding:16px; border-bottom:1px solid #e5e7eb; }
+.status { display:inline-block; padding:6px 12px; border-radius:20px; font-weight:bold; font-size:13px; }
+.pago { background:#d1fae5; color:#065f46; }
+.aberto { background:#fef3c7; color:#92400e; }
+.vencido { background:#fee2e2; color:#991b1b; }
 
-    <style>
-        * { box-sizing: border-box; }
+.logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
+.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.menu a:hover { background:#ef3b39; color:white; }
+.menu .ativo { background:#2563eb; color:white; }
+.botao { background:#ef3b39 !important; }
+.botao:hover { background:#d92f2d !important; }
+.numero { color:#ef3b39 !important; }
+.voltar { color:#ef3b39 !important; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #0f172a;
-        }
-
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .menu {
-            width: 250px;
-            background: #0f172a;
-            color: white;
-            padding: 25px 18px;
-        }
-
-        .menu h2 { margin-top: 0; }
-
-        .menu a {
-            display: block;
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 13px;
-            border-radius: 9px;
-            margin-bottom: 8px;
-        }
-
-        .menu a:hover,
-        .menu .ativo {
-            background: #2563eb;
-            color: white;
-        }
-
-        .conteudo {
-            flex: 1;
-            padding: 35px;
-        }
-
-        .topo {
-            margin-bottom: 30px;
-        }
-
-        .topo h1 {
-            margin: 0;
-            font-size: 34px;
-        }
-
-        .topo p {
-            color: #64748b;
-            margin-top: 8px;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            max-width: 600px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 15px;
-            margin-bottom: 18px;
-        }
-
-        .botao {
-            background: #2563eb;
-            color: white;
-            padding: 13px 20px;
-            border-radius: 9px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .botao:hover {
-            background: #1d4ed8;
-        }
-
-        .voltar {
-            display: inline-block;
-            margin-top: 20px;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
+@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%}.cards-resumo,.cards{grid-template-columns:1fr}}
+</style>
 </head>
-
 <body>
-
 <div class="layout">
 
-    <aside class="menu">
-        <h2>🏛 Administração</h2>
-
-        <a href="/admin">🏠 Dashboard</a>
-        <a class="ativo" href="/cadastro_locatario">👤 Cadastrar locatário</a>
-        <a href="/upload_boleto">📄 Enviar boleto</a>
-        <a href="/boletos_admin">📋 Boletos enviados</a>
-        <a href="#">⚙ Configurações</a>
-        <a href="/logout">🚪 Sair</a>
-    </aside>
-
-    <main class="conteudo">
-
-        <div class="topo">
-            <h1>👤 Cadastrar Locatário</h1>
-            <p>Preencha os dados para criar o acesso do locatário ao portal.</p>
-        </div>
-
-        <div class="card">
-
-            <form method="POST">
-
-                <label>Nome completo</label>
-                <input type="text" name="nome" placeholder="Ex: João Silva" required>
-
-                <label>Usuário de acesso</label>
-                <input type="text" name="usuario" placeholder="Ex: joao.silva" required>
-
-                <label>Senha inicial</label>
-                <input type="password" name="senha" placeholder="Digite uma senha" required>
-
-                <button class="botao" type="submit">Salvar locatário</button>
-
-            </form>
-
-        </div>
-
-        <a class="voltar" href="/admin">← Voltar ao painel</a>
-
-    </main>
-
+<aside class="menu">
+    <div class="logo-area">
+    <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
 </div>
+    <a href="/admin">🏠 Dashboard</a>
+    <a href="/cadastro_admin">👮 Cadastrar administrador</a>
+    <a href="/clientes_admin">👥 Clientes cadastrados</a>
+    <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
+    <a href="/upload_boleto">📄 Enviar boleto</a>
+    <a href="/importar_boletos">📥 Importar boletos</a>
+    <a href="/boletos_admin">📋 Boletos enviados</a>
+    <a href="/upload_informe">📑 Enviar informe</a>
+    <a href="/informes_admin">📚 Informes enviados</a>
+    <a href="/configuracoes">⚙ Configurações</a>
+    <a href="/logout">🚪 Sair</a>
+</aside>
 
+<main class="conteudo">
+    <div class="topo"><h1>👤 Cadastrar Locatário</h1><p>Cadastre manualmente ou importe vários locatários por planilha.</p></div>
+    {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
+    <div class="card">
+        <h2>Cadastro manual</h2>
+        <p>Use esta opção para cadastrar apenas um locatário.</p>
+        <form method="POST">
+            <label>Nome completo</label>
+            <input type="text" name="nome" placeholder="Ex: João Silva" required>
+            <label>CPF</label>
+            <input type="text" name="cpf" placeholder="Ex: 000.000.000-00" required>
+            <label>Contrato</label>
+            <input type="text" name="contrato" placeholder="Ex: 12345" required>
+            <button class="botao" type="submit">Salvar locatário</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Importação por planilha</h2>
+        <p>Use esta opção para cadastrar vários locatários de uma vez por arquivo Excel. A planilha deve ter as colunas: <b>NOME / CPF / CONTRATO</b>.</p>
+        <a class="botao" href="/importar_clientes">📥 Importar clientes por planilha</a>
+    </div>
+
+    <a class="voltar" href="/admin">← Voltar ao painel</a>
+</main>
+</div>
 </body>
 </html>

@@ -2,3 +2,5 @@ Flask
 Flask-Login
 Werkzeug
 gunicorn
+pandas
+openpyxl

@@ -2,3 +2,7 @@ venv/
 __pycache__/
 *.pyc
 .env
+.idea/
+portal.db
+uploads/
+ignorados.txt

@@ -1,200 +1,222 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Enviar Boleto</title>
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Enviar Boleto</title>
+<style>
+* { box-sizing: border-box; }
+body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
+.layout { display:flex; min-height:100vh; align-items:stretch; }
+.menu { width:250px; min-height:100vh; background:#0f172a; color:white; padding:25px 18px; flex-shrink:0; position:sticky; top:0; align-self:flex-start; }
+.menu h2 { margin-top:0; }
+.menu a { display:block; color:#cbd5e1; text-decoration:none; padding:13px; border-radius:9px; margin-bottom:8px; }
+.menu a:hover, .menu .ativo { background:#2563eb; color:white; }
+.conteudo { flex:1; padding:35px; }
+.topo { margin-bottom:30px; }
+.topo h1 { margin:0; font-size:34px; }
+.topo p { color:#64748b; margin-top:8px; }
+.card { background:white; padding:30px; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+input, select { width:100%; padding:14px; border:1px solid #d1d5db; border-radius:10px; font-size:15px; margin-bottom:18px; background:white; }
+label { display:block; margin-bottom:8px; font-weight:bold; }
+.botao { display:inline-block; background:#2563eb; color:white; padding:13px 20px; border-radius:9px; border:none; text-decoration:none; font-weight:bold; cursor:pointer; }
+.botao:hover { background:#1d4ed8; }
+.voltar { display:inline-block; margin-top:20px; color:#2563eb; text-decoration:none; font-weight:bold; }
+.msg { background:#d1fae5; color:#065f46; padding:14px; border-radius:10px; margin-bottom:20px; font-weight:bold; }
+.info-cliente { background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; padding:14px; border-radius:10px; margin-bottom:18px; display:none; }
+.erro-cliente { background:#fee2e2; border:1px solid #fecaca; color:#991b1b; padding:14px; border-radius:10px; margin-bottom:18px; display:none; }
+.linha { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
 
-    <style>
-        * { box-sizing: border-box; }
+.logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
+.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.menu a:hover { background:#ef3b39; color:white; }
+.menu .ativo { background:#2563eb; color:white; }
+.botao { background:#ef3b39 !important; }
+.botao:hover { background:#d92f2d !important; }
+.numero { color:#ef3b39 !important; }
+.voltar { color:#ef3b39 !important; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #0f172a;
-        }
-
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .menu {
-            width: 250px;
-            background: #0f172a;
-            color: white;
-            padding: 25px 18px;
-        }
-
-        .menu h2 { margin-top: 0; }
-
-        .menu a {
-            display: block;
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 13px;
-            border-radius: 9px;
-            margin-bottom: 8px;
-        }
-
-        .menu a:hover,
-        .menu .ativo {
-            background: #2563eb;
-            color: white;
-        }
-
-        .conteudo {
-            flex: 1;
-            padding: 35px;
-        }
-
-        .topo {
-            margin-bottom: 30px;
-        }
-
-        .topo h1 {
-            margin: 0;
-            font-size: 34px;
-        }
-
-        .topo p {
-            color: #64748b;
-            margin-top: 8px;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            max-width: 700px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 15px;
-            margin-bottom: 18px;
-            background: white;
-        }
-
-        .botao {
-            background: #2563eb;
-            color: white;
-            padding: 13px 20px;
-            border-radius: 9px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .botao:hover {
-            background: #1d4ed8;
-        }
-
-        .voltar {
-            display: inline-block;
-            margin-top: 20px;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
+@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%; position:relative}.linha{grid-template-columns:1fr}}
+</style>
 </head>
-
 <body>
-
 <div class="layout">
 
-    <aside class="menu">
-        <h2>🏛 Administração</h2>
+<aside class="menu">
+    <div class="logo-area">
+    <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
+</div>
+    <a href="/admin">🏠 Dashboard</a>
+    <a href="/cadastro_admin">👮 Cadastrar administrador</a>
+    <a href="/clientes_admin">👥 Clientes cadastrados</a>
+    <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
+    <a href="/upload_boleto" class="ativo">📄 Enviar boleto</a>
+    <a href="/importar_boletos">📥 Importar boletos</a>
+    <a href="/boletos_admin">📋 Boletos enviados</a>
+    <a href="/upload_informe">📑 Enviar informe</a>
+    <a href="/informes_admin">📚 Informes enviados</a>
+    <a href="/configuracoes">⚙ Configurações</a>
+    <a href="/logout">🚪 Sair</a>
+</aside>
 
-        <a href="/admin">🏠 Dashboard</a>
-        <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
-        <a class="ativo" href="/upload_boleto">📄 Enviar boleto</a>
-        <a href="/boletos_admin">📋 Boletos enviados</a>
-        <a href="#">⚙ Configurações</a>
-        <a href="/logout">🚪 Sair</a>
-    </aside>
+<main class="conteudo">
+    <div class="topo">
+        <h1>📄 Enviar Boleto</h1>
+        <p>Busque pelo nome/CPF ou pelo contrato. Ao encontrar um, o outro campo será preenchido automaticamente.</p>
+    </div>
 
-    <main class="conteudo">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}
+        {% endif %}
+    {% endwith %}
 
-        <div class="topo">
-            <h1>📄 Enviar Boleto</h1>
-            <p>Selecione o locatário, informe os dados financeiros e envie o PDF.</p>
-        </div>
+    <div class="card">
+        <form method="POST" enctype="multipart/form-data" onsubmit="return validarClienteSelecionado()">
+            <input type="hidden" name="cpf_locatario" id="cpf_locatario">
 
-        <div class="card">
-{% with messages = get_flashed_messages() %}
+            <div class="linha">
+                <div>
+                    <label>Buscar locatário por nome ou CPF</label>
+                    <input type="text" id="busca_cliente" list="lista_clientes" placeholder="Digite o nome ou CPF" autocomplete="off" onchange="buscarPorNomeCpf()" onblur="buscarPorNomeCpf()">
+                    <datalist id="lista_clientes">
+                        {% for locatario in locatarios %}
+                            <option value="{{ locatario[1] }} - CPF: {{ locatario[0] }}{% if locatario[2] %} - Contrato: {{ locatario[2] }}{% endif %}"></option>
+                        {% endfor %}
+                    </datalist>
+                </div>
 
-    {% if messages %}
-
-        {% for message in messages %}
-
-            <div style="
-                background:#d1fae5;
-                color:#065f46;
-                padding:14px;
-                border-radius:10px;
-                margin-bottom:20px;
-                font-weight:bold;
-            ">
-                {{ message }}
+                <div>
+                    <label>Contrato</label>
+                    <input type="text" name="contrato" id="contrato" list="lista_contratos" placeholder="Digite o número do contrato" autocomplete="off" onchange="buscarPorContrato()" onblur="buscarPorContrato()" required>
+                    <datalist id="lista_contratos">
+                        {% for locatario in locatarios %}
+                            {% if locatario[2] %}<option value="{{ locatario[2] }}"></option>{% endif %}
+                        {% endfor %}
+                    </datalist>
+                </div>
             </div>
 
-        {% endfor %}
+            <div id="cliente_encontrado" class="info-cliente"></div>
+            <div id="cliente_nao_encontrado" class="erro-cliente">Nenhum locatário encontrado para essa busca.</div>
 
-    {% endif %}
-
-{% endwith %}
-            <form method="POST" enctype="multipart/form-data">
-
-                <label>Locatário</label>
-                <select name="usuario_locatario" required>
-                    <option value="">Selecione um locatário</option>
-
-                    {% for locatario in locatarios %}
-                        <option value="{{ locatario[0] }}">
-                            {{ locatario[1] }} - {{ locatario[0] }}
-                        </option>
-                    {% endfor %}
-                </select>
-
-                <label>Valor</label>
-                <input type="text" name="valor" placeholder="Ex: 850,00" required>
-
-                <label>Vencimento</label>
-                <input type="date" name="vencimento" required>
-
-                <label>Status</label>
-                <select name="status">
-                    <option value="Em aberto">Em aberto</option>
-                    <option value="Pago">Pago</option>
-                    <option value="Vencido">Vencido</option>
-                </select>
-
-                <label>Arquivo PDF do boleto</label>
-                <input type="file" name="arquivo" accept="application/pdf" required>
-
-                <button class="botao" type="submit">Enviar boleto</button>
-
-            </form>
-
-        </div>
-
-        <a class="voltar" href="/admin">← Voltar ao painel</a>
-
-    </main>
-
+            <label>Parcela</label><input type="text" name="parcela" required>
+            <label>Valor</label><input type="text" name="valor" placeholder="Ex: 850,00" required>
+            <label>Vencimento</label><input type="date" name="vencimento" required>
+            <label>Status</label>
+            <select name="status"><option value="Em aberto">Em aberto</option><option value="Pago">Pago</option><option value="Vencido">Vencido</option></select>
+            <label>Arquivo PDF do boleto</label><input type="file" name="arquivo" accept="application/pdf" required>
+            <button class="botao" type="submit">Enviar boleto</button>
+        </form>
+    </div>
+    <a class="voltar" href="/admin">← Voltar ao painel</a>
+</main>
 </div>
+<script>
+const locatarios = [
+    {% for locatario in locatarios %}
+        {
+            cpf: "{{ locatario[0] }}",
+            nome: "{{ locatario[1]|e }}",
+            contrato: "{{ locatario[2] if locatario[2] else '' }}"
+        }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
 
+function somenteNumeros(texto){
+    return (texto || '').toString().replace(/\D/g, '');
+}
+
+function normalizar(texto){
+    return (texto || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function selecionarCliente(cliente){
+    document.getElementById('cpf_locatario').value = cliente.cpf;
+    document.getElementById('busca_cliente').value = `${cliente.nome} - CPF: ${cliente.cpf}${cliente.contrato ? ' - Contrato: ' + cliente.contrato : ''}`;
+    document.getElementById('contrato').value = cliente.contrato || '';
+
+    const info = document.getElementById('cliente_encontrado');
+    info.style.display = 'block';
+    info.innerHTML = `<strong>Locatário selecionado:</strong> ${cliente.nome}<br><strong>CPF:</strong> ${cliente.cpf}${cliente.contrato ? '<br><strong>Contrato:</strong> ' + cliente.contrato : ''}`;
+    document.getElementById('cliente_nao_encontrado').style.display = 'none';
+}
+
+function limparCliente(mostrarErro=false){
+    document.getElementById('cpf_locatario').value = '';
+    document.getElementById('cliente_encontrado').style.display = 'none';
+    document.getElementById('cliente_nao_encontrado').style.display = mostrarErro ? 'block' : 'none';
+}
+
+function buscarPorNomeCpf(){
+    const termo = document.getElementById('busca_cliente').value;
+    const termoNormalizado = normalizar(termo);
+    const cpfBusca = somenteNumeros(termo);
+
+    if (!termoNormalizado && !cpfBusca){
+        limparCliente(false);
+        return;
+    }
+
+    // Só seleciona automaticamente quando houver correspondência exata
+    // Isso evita travar o campo enquanto o usuário ainda está digitando.
+    let cliente = null;
+
+    if (cpfBusca.length >= 11){
+        cliente = locatarios.find(c => somenteNumeros(c.cpf) === cpfBusca);
+    }
+
+    if (!cliente){
+        cliente = locatarios.find(c => {
+            const nome = normalizar(c.nome);
+            const exibicao = normalizar(`${c.nome} - cpf: ${c.cpf}${c.contrato ? ' - contrato: ' + c.contrato : ''}`);
+            return nome === termoNormalizado || exibicao === termoNormalizado;
+        });
+    }
+
+    if (cliente) selecionarCliente(cliente);
+    else limparCliente(false);
+}
+
+function buscarPorContrato(){
+    const campoContrato = document.getElementById('contrato');
+    const termoOriginal = campoContrato.value.trim();
+    const termo = normalizar(termoOriginal);
+
+    if (!termo){
+        limparCliente(false);
+        return;
+    }
+
+    // Busca somente contrato exato.
+    // Não usamos includes() aqui, porque includes selecionava 116 ao digitar 1/11/116
+    // e impedia o usuário de terminar de digitar o contrato correto.
+    const cliente = locatarios.find(c => normalizar(c.contrato) === termo);
+
+    if (cliente) selecionarCliente(cliente);
+    else limparCliente(false);
+}
+
+
+// Enquanto digita, apenas limpa a seleção anterior.
+// A seleção automática acontece no change/blur, quando o usuário termina de digitar
+// ou escolhe uma opção da lista.
+document.getElementById('contrato').addEventListener('input', function(){
+    document.getElementById('cpf_locatario').value = '';
+    document.getElementById('cliente_encontrado').style.display = 'none';
+    document.getElementById('cliente_nao_encontrado').style.display = 'none';
+});
+
+document.getElementById('busca_cliente').addEventListener('input', function(){
+    document.getElementById('cpf_locatario').value = '';
+    document.getElementById('cliente_encontrado').style.display = 'none';
+    document.getElementById('cliente_nao_encontrado').style.display = 'none';
+});
+
+function validarClienteSelecionado(){
+    if (!document.getElementById('cpf_locatario').value){
+        alert('Localize e selecione o locatário pelo nome, CPF ou contrato antes de enviar o boleto.');
+        return false;
+    }
+    return true;
+}
+</script>
 </body>
 </html>

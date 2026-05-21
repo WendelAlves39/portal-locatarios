@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Painel Administrativo</title>
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Enviar Informe</title>
 <style>
 * { box-sizing: border-box; }
 body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
@@ -18,17 +18,7 @@ input, select { width:100%; padding:14px; border:1px solid #d1d5db; border-radiu
 label { display:block; margin-bottom:8px; font-weight:bold; }
 .botao { display:inline-block; background:#2563eb; color:white; padding:13px 20px; border-radius:9px; border:none; text-decoration:none; font-weight:bold; cursor:pointer; }
 .botao:hover { background:#1d4ed8; }
-.voltar { display:inline-block; margin-top:20px; color:#2563eb; text-decoration:none; font-weight:bold; }
 .msg { background:#d1fae5; color:#065f46; padding:14px; border-radius:10px; margin-bottom:20px; font-weight:bold; }
-.cards-resumo,.cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:25px; }
-.numero { font-size:32px; font-weight:bold; margin-top:12px; color:#2563eb; }
-table { width:100%; border-collapse:collapse; background:white; }
-th { background:#f1f5f9; text-align:left; padding:16px; color:#334155; }
-td { padding:16px; border-bottom:1px solid #e5e7eb; }
-.status { display:inline-block; padding:6px 12px; border-radius:20px; font-weight:bold; font-size:13px; }
-.pago { background:#d1fae5; color:#065f46; }
-.aberto { background:#fef3c7; color:#92400e; }
-.vencido { background:#fee2e2; color:#991b1b; }
 
 .logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
 .logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
@@ -39,12 +29,11 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 .numero { color:#ef3b39 !important; }
 .voltar { color:#ef3b39 !important; }
 
-@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%}.cards-resumo,.cards{grid-template-columns:1fr}}
+@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%}}
 </style>
 </head>
 <body>
 <div class="layout">
-
 <aside class="menu">
     <div class="logo-area">
     <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
@@ -64,20 +53,36 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 
 <main class="conteudo">
     <div class="topo">
-        <h1>Painel Administrativo</h1>
-        <p>Olá, {{ nome }}. Gerencie locatários, boletos e relatórios.</p>
+        <h1>Enviar Informe de Pagamentos</h1>
+        <p>Selecione o locatário, informe o ano e envie o PDF.</p>
     </div>
-    <div class="cards-resumo">
-        <div class="card"><h3>Locatários cadastrados</h3><div class="numero">{{ total_locatarios }}</div></div>
-        <div class="card"><h3>Boletos enviados</h3><div class="numero">{{ total_boletos }}</div></div>
-        <div class="card"><h3>Informes enviados</h3><div class="numero">{{ total_informes }}</div></div>
-    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="msg">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <div class="card">
-        <h2>Ações rápidas</h2>
-        <a class="botao" href="/cadastro_locatario">Cadastrar ou importar locatários</a>
-        <a class="botao" href="/importar_boletos">Importar boletos</a>
-        <a class="botao" href="/upload_boleto">Enviar boleto manual</a>
-        <a class="botao" href="/upload_informe">Enviar informe</a>
+        <form method="POST" enctype="multipart/form-data">
+            <label>Locatário</label>
+            <select name="cpf_locatario" required>
+                <option value="">Selecione um locatário</option>
+                {% for locatario in locatarios %}
+                    <option value="{{ locatario[0] }}">{{ locatario[1] }} - CPF: {{ locatario[0] }}{% if locatario[2] %} - Contrato: {{ locatario[2] }}{% endif %}</option>
+                {% endfor %}
+            </select>
+
+            <label>Ano do informe</label>
+            <input type="text" name="ano" placeholder="Ex: 2025" required>
+
+            <label>Arquivo PDF do informe</label>
+            <input type="file" name="arquivo" accept="application/pdf" required>
+
+            <button class="botao" type="submit">Enviar informe</button>
+        </form>
     </div>
 </main>
 </div>

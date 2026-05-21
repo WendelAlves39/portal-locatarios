@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
-    <title>Portal do Locatário - Xangai Imóveis</title>
+    <title>Primeiro acesso - Xangai Imóveis</title>
     <style>
         *{box-sizing:border-box}
         body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1f2937 45%,#f4f6f9 45%,#f4f6f9 100%);display:flex;align-items:center;justify-content:center;color:#0f172a}
@@ -23,8 +23,8 @@
 <body>
 <div class="login-box">
     <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo">
-    <h1>Portal do Locatário</h1>
-    <p class="subtitulo">Acesse seus boletos, pagamentos e informes.</p>
+    <h1>Primeiro acesso</h1>
+    <p class="subtitulo">Informe seu CPF e crie sua senha de acesso.</p>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -36,11 +36,12 @@
 
     <form method="POST">
         <input type="text" name="cpf" placeholder="CPF" required>
-        <input type="password" name="senha" placeholder="Senha" required>
-        <button type="submit">Entrar</button>
+        <input type="password" name="senha" placeholder="Nova senha" required>
+        <input type="password" name="confirmar" placeholder="Confirmar senha" required>
+        <button type="submit">Cadastrar senha</button>
     </form>
 
-    <a href="/primeiro_acesso">Primeiro acesso / cadastrar senha</a>
+    <a href="/">Voltar ao login</a>
     <div class="rodape">Xangai Imóveis • CJ 5016</div>
 </div>
 </body>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Painel Administrativo</title>
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Importar Boletos</title>
 <style>
 * { box-sizing: border-box; }
 body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
@@ -63,22 +63,16 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 </aside>
 
 <main class="conteudo">
-    <div class="topo">
-        <h1>Painel Administrativo</h1>
-        <p>Olá, {{ nome }}. Gerencie locatários, boletos e relatórios.</p>
-    </div>
-    <div class="cards-resumo">
-        <div class="card"><h3>Locatários cadastrados</h3><div class="numero">{{ total_locatarios }}</div></div>
-        <div class="card"><h3>Boletos enviados</h3><div class="numero">{{ total_boletos }}</div></div>
-        <div class="card"><h3>Informes enviados</h3><div class="numero">{{ total_informes }}</div></div>
-    </div>
+    <div class="topo"><h1>📥 Importar boletos</h1><p>Planilha esperada: Nome / CPF / Contrato / Parcela / Vencimento / Valor / caminho do boleto.</p></div>
+    {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
     <div class="card">
-        <h2>Ações rápidas</h2>
-        <a class="botao" href="/cadastro_locatario">Cadastrar ou importar locatários</a>
-        <a class="botao" href="/importar_boletos">Importar boletos</a>
-        <a class="botao" href="/upload_boleto">Enviar boleto manual</a>
-        <a class="botao" href="/upload_informe">Enviar informe</a>
+        <form method="POST" enctype="multipart/form-data">
+            <label>Planilha Excel</label>
+            <input type="file" name="arquivo" accept=".xlsx,.xls" required>
+            <button class="botao" type="submit">Importar boletos</button>
+        </form>
     </div>
+    <a class="voltar" href="/admin">← Voltar ao painel</a>
 </main>
 </div>
 </body>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes cadastrados</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin:0;
+            font-family:Arial,sans-serif;
+            background:#f4f6f9;
+            color:#0f172a;
+        }
+
+        .layout {
+            display:flex;
+            min-height:100vh;
+        }
+
+        .menu {
+            width:250px;
+            background:#0f172a;
+            color:white;
+            padding:25px 18px;
+        }
+
+        .menu h2 {
+            margin-top:0;
+        }
+
+        .menu a {
+            display:block;
+            color:#cbd5e1;
+            text-decoration:none;
+            padding:13px;
+            border-radius:9px;
+            margin-bottom:8px;
+        }
+
+        .menu a:hover,
+        .menu .ativo {
+            background:#2563eb;
+            color:white;
+        }
+
+        .conteudo {
+            flex:1;
+            padding:35px;
+        }
+
+        .topo {
+            margin-bottom:30px;
+        }
+
+        .topo h1 {
+            margin:0;
+            font-size:34px;
+        }
+
+        .topo p {
+            color:#64748b;
+            margin-top:8px;
+        }
+
+        .card {
+            background:white;
+            padding:25px;
+            border-radius:14px;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+            margin-bottom:20px;
+        }
+
+        input {
+            width:100%;
+            padding:14px;
+            border:1px solid #d1d5db;
+            border-radius:10px;
+            font-size:15px;
+            margin-bottom:15px;
+        }
+
+        .botao {
+            display:inline-block;
+            background:#2563eb;
+            color:white;
+            padding:12px 18px;
+            border-radius:9px;
+            border:none;
+            text-decoration:none;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th {
+            background:#f1f5f9;
+            text-align:left;
+            padding:16px;
+            color:#334155;
+        }
+
+        td {
+            padding:16px;
+            border-bottom:1px solid #e5e7eb;
+        }
+
+        .status {
+            display:inline-block;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:bold;
+            font-size:13px;
+        }
+
+        .ok {
+            background:#d1fae5;
+            color:#065f46;
+        }
+
+        .pendente {
+            background:#fef3c7;
+            color:#92400e;
+        }
+
+        .voltar {
+            display:inline-block;
+            margin-top:20px;
+            color:#2563eb;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .msg {
+            background:#d1fae5;
+            color:#065f46;
+            padding:14px;
+            border-radius:10px;
+            margin-bottom:20px;
+            font-weight:bold;
+        }
+
+        .inativo {
+            background:#fee2e2;
+            color:#991b1b;
+        }
+
+        .acoes {
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+
+        .botao-pequeno {
+            border:none;
+            border-radius:8px;
+            padding:8px 12px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .botao-reset {
+            background:#fef3c7;
+            color:#92400e;
+        }
+
+        .botao-inativar {
+            background:#fee2e2;
+            color:#991b1b;
+        }
+
+        .botao-reativar {
+            background:#d1fae5;
+            color:#065f46;
+        }
+
+        .tabela-scroll{
+            max-height:600px;
+            overflow-y:auto;
+            border-radius:12px;
+        }
+
+        th{
+    position:sticky;
+    top:0;
+    z-index:2;
+}
+    
+.logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
+.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.menu a:hover { background:#ef3b39; color:white; }
+.menu .ativo { background:#2563eb; color:white; }
+.botao { background:#ef3b39 !important; }
+.botao:hover { background:#d92f2d !important; }
+.numero { color:#ef3b39 !important; }
+.voltar { color:#ef3b39 !important; }
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="menu">
+    <div class="logo-area">
+    <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
+</div>
+    <a href="/admin">🏠 Dashboard</a>
+    <a href="/cadastro_admin">👮 Cadastrar administrador</a>
+    <a href="/clientes_admin">👥 Clientes cadastrados</a>
+    <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
+    <a href="/upload_boleto">📄 Enviar boleto</a>
+    <a href="/importar_boletos">📥 Importar boletos</a>
+    <a href="/boletos_admin">📋 Boletos enviados</a>
+    <a href="/upload_informe">📑 Enviar informe</a>
+    <a href="/informes_admin">📚 Informes enviados</a>
+    <a href="/logout">🚪 Sair</a>
+</aside>
+
+    <main class="conteudo">
+
+        <div class="topo">
+            <h1>👥 Clientes cadastrados</h1>
+            <p>Consulte os locatários importados ou cadastrados manualmente.</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <form method="GET" action="/clientes_admin">
+                <input
+                    type="text"
+                    name="busca"
+                    placeholder="Pesquisar por nome, CPF ou contrato..."
+                    value="{{ busca if busca else '' }}"
+                >
+
+                <button class="botao" type="submit">
+                    🔍 Pesquisar
+                </button>
+
+                <a class="botao" href="/cadastro_locatario">
+                    + Novo cliente
+                </a>
+            </form>
+        </div>
+
+        <div class="card">
+    <h3>Total encontrado: {{ clientes|length }}</h3>
+
+    <div class="tabela-scroll">
+        <table>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF/CNPJ</th>
+                    <th>Contrato</th>
+                    <th>Senha</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente[1] }}</td>
+                    <td>{{ cliente[2] }}</td>
+                    <td>{{ cliente[3] if cliente[3] else '-' }}</td>
+                    <td>
+                        {% if cliente[4] == 1 %}
+                            <span class="status ok">Senha criada</span>
+                        {% else %}
+                            <span class="status pendente">Aguardando primeiro acesso</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if cliente[5] == 0 %}
+                            <span class="status inativo">Inativo</span>
+                        {% else %}
+                            <span class="status ok">Ativo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="acoes">
+                            <form method="POST" action="/resetar_senha/{{ cliente[0] }}" onsubmit="return confirm('Resetar a senha deste cliente?')">
+                                <button class="botao-pequeno botao-reset" type="submit">Resetar senha</button>
+                            </form>
+
+                            <form method="POST" action="/alternar_cliente/{{ cliente[0] }}" onsubmit="return confirm('Confirmar alteração da situação deste cliente?')">
+                                {% if cliente[5] == 0 %}
+                                    <button class="botao-pequeno botao-reativar" type="submit">Reativar</button>
+                                {% else %}
+                                    <button class="botao-pequeno botao-inativar" type="submit">Inativar</button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+
+        <a class="voltar" href="/admin">← Voltar ao painel</a>
+
+    </main>
+
+</div>
+
+</body>
+</html>

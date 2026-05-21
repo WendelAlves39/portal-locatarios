@@ -1,280 +1,186 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Portal do Locatário</title>
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Portal do Locatário</title>
+<style>
+* { box-sizing: border-box; }
+body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
+.layout { display:flex; min-height:100vh; }
+.menu { width:250px; background:#0f172a; color:white; padding:25px 18px; }
+.menu h2 { margin-top:0; }
+.menu a { display:block; color:#cbd5e1; text-decoration:none; padding:13px; border-radius:9px; margin-bottom:8px; }
+.menu a:hover, .menu .ativo { background:#2563eb; color:white; }
+.conteudo { flex:1; padding:35px; }
+.topo { margin-bottom:30px; }
+.topo h1 { margin:0; font-size:34px; }
+.topo p { color:#64748b; margin-top:8px; }
+.card { background:white; padding:30px; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+.botao { display:inline-block; background:#2563eb; color:white; padding:10px 16px; border-radius:9px; border:none; text-decoration:none; font-weight:bold; cursor:pointer; }
+.botao:hover { background:#1d4ed8; }
+.botao-secundario { display:inline-block; background:#e2e8f0; color:#0f172a; padding:13px 20px; border-radius:9px; text-decoration:none; font-weight:bold; margin-right:8px; margin-bottom:8px; }
+.cards-resumo { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:25px; }
+.numero { font-size:32px; font-weight:bold; margin-top:12px; color:#2563eb; }
+table { width:100%; border-collapse:collapse; background:white; }
+th { background:#f1f5f9; text-align:left; padding:14px; color:#334155; }
+td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
+.status { display:inline-block; padding:6px 12px; border-radius:20px; font-weight:bold; font-size:13px; }
+.pago { background:#d1fae5; color:#065f46; }
+.aberto { background:#fef3c7; color:#92400e; }
+.vencido { background:#fee2e2; color:#991b1b; }
+.vazio { color:#64748b; padding:20px; }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+.logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
+.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.menu a:hover { background:#ef3b39; color:white; }
+.menu .ativo { background:#2563eb; color:white; }
+.botao { background:#ef3b39 !important; }
+.botao:hover { background:#d92f2d !important; }
+.numero { color:#ef3b39 !important; }
+.voltar { color:#ef3b39 !important; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            color: #333;
-        }
-
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .menu {
-            width: 240px;
-            background: #0f172a;
-            color: white;
-            padding: 25px 20px;
-        }
-
-        .menu h2 {
-            margin-top: 0;
-            font-size: 22px;
-        }
-
-        .menu a {
-            display: block;
-            color: #cbd5e1;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .menu a:hover {
-            background: #1e293b;
-            color: white;
-        }
-
-        .conteudo {
-            flex: 1;
-        }
-
-        .topo {
-            background: white;
-            padding: 22px 30px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .topo h1 {
-            margin: 0;
-        }
-
-        .topo p {
-            margin: 6px 0 0 0;
-            color: #666;
-        }
-
-        .container {
-            padding: 30px;
-        }
-
-        .cards-resumo {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: white;
-            padding: 22px;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .card h3 {
-            margin: 0;
-            font-size: 15px;
-            color: #666;
-        }
-
-        .card .numero {
-            margin-top: 10px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #004aad;
-        }
-
-        .secao-titulo {
-            margin-bottom: 15px;
-        }
-
-        .boleto {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 14px;
-        }
-
-        .boleto-info strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .boleto-info span {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .botao {
-            background: #004aad;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .botao:hover {
-            background: #00347a;
-        }
-
-        .status {
-            display: inline-block;
-            margin-top: 8px;
-            background: #fff3cd;
-            color: #856404;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 13px;
-        }
-
-        .status-pago {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-vencido {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-aberto {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .vazio {
-            color: #777;
-        }
-
-        @media (max-width: 800px) {
-            .layout {
-                flex-direction: column;
-            }
-
-            .menu {
-                width: 100%;
-            }
-
-            .cards-resumo {
-                grid-template-columns: 1fr;
-            }
-
-            .boleto {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%}.cards-resumo{grid-template-columns:1fr} table{font-size:13px}.conteudo{padding:20px}}
+</style>
 </head>
 <body>
-
 <div class="layout">
-
-    <aside class="menu">
-        <h2>Imobiliária</h2>
-
-        <a href="/locatario">🏠 Dashboard</a>
-        <a href="/locatario">📄 Boletos</a>
-        <a href="#">💰 Pagamentos</a>
-        <a href="#">📑 Relatórios</a>
-        <a href="#">⚙ Configurações</a>
-        <a href="/logout">🚪 Sair</a>
-    </aside>
-
-    <main class="conteudo">
-
-        <header class="topo">
-            <h1>Portal do Locatário</h1>
-            <p>Olá, {{ nome }}. Bem-vindo ao seu painel de boletos e pagamentos.</p>
-        </header>
-
-        <section class="container">
-
-            <div class="cards-resumo">
-                <div class="card">
-                    <h3>Boletos disponíveis</h3>
-                    <div class="numero">{{ boletos|length }}</div>
-                </div>
-
-                <div class="card">
-                    <h3>Em aberto</h3>
-                    <div class="numero">{{ boletos|length }}</div>
-                </div>
-
-                <div class="card">
-                    <h3>Pagos</h3>
-                    <div class="numero">0</div>
-                </div>
-            </div>
-
-            <h2 class="secao-titulo">Meus boletos</h2>
-
-            {% if boletos %}
-
-                {% for boleto in boletos %}
-
-                    <div class="card boleto">
-                        <div class="boleto-info">
-                            <strong>{{ boleto[0] }}</strong>
-                            <span>Valor: R$ {{ boleto[1] }}</span>
-                            <br>
-                            <span>Vencimento: {{ boleto[2] }}</span>
-                            <br>
-                            {% if boleto[3] == "Pago" %}
-
-    <span class="status status-pago">
-        🟢 Pago
-    </span>
-
-{% elif boleto[3] == "Vencido" %}
-
-    <span class="status status-vencido">
-        🔴 Vencido
-    </span>
-
-{% else %}
-
-    <span class="status status-aberto">
-        🟡 Em aberto
-    </span>
-
-{% endif %}
-                        </div>
-
-                        <a class="botao" href="/baixar_boleto/{{ boleto[0] }}" target="_blank">
-                            Abrir boleto
-                        </a>
-                    </div>
-
-                {% endfor %}
-
-            {% else %}
-
-                <div class="card vazio">
-                    Nenhum boleto disponível no momento.
-                </div>
-
-            {% endif %}
-
-        </section>
-
-    </main>
-
+<aside class="menu">
+    <div class="logo-area">
+    <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
 </div>
+    <a class="{% if pagina == 'dashboard' %}ativo{% endif %}" href="/locatario">🏠 Dashboard</a>
+    <a class="{% if pagina == 'boletos' %}ativo{% endif %}" href="/locatario/boletos">📄 Boletos</a>
+    <a class="{% if pagina == 'pagamentos' %}ativo{% endif %}" href="/locatario/pagamentos">💰 Pagamentos</a>
+    <a class="{% if pagina == 'relatorios' %}ativo{% endif %}" href="/locatario/relatorios">📑 Relatórios</a>
+    <a href="/logout">🚪 Sair</a>
+</aside>
+<main class="conteudo">
+    <div class="topo">
+        <h1>Portal do Locatário</h1>
+        <p>Olá, {{ nome }}. Acesse seus boletos, pagamentos e relatórios.</p>
+    </div>
 
+    {% set total_abertos = boletos|selectattr(3, 'equalto', 'Em aberto')|list|length %}
+    {% set total_pagos = boletos|selectattr(3, 'equalto', 'Pago')|list|length %}
+
+    {% if pagina == 'dashboard' %}
+        <div class="cards-resumo">
+            <div class="card"><h3>Boletos disponíveis</h3><div class="numero">{{ boletos|length }}</div></div>
+            <div class="card"><h3>Em aberto</h3><div class="numero">{{ total_abertos }}</div></div>
+            <div class="card"><h3>Relatórios</h3><div class="numero">{{ informes|length }}</div></div>
+        </div>
+        <div class="card">
+            <h2>Acesso rápido</h2>
+            <p>Escolha abaixo o que deseja consultar.</p>
+            <a class="botao-secundario" href="/locatario/boletos">Ver boletos</a>
+            <a class="botao-secundario" href="/locatario/pagamentos">Ver pagamentos</a>
+            <a class="botao-secundario" href="/locatario/relatorios">Ver relatórios</a>
+        </div>
+    {% endif %}
+
+    {% if pagina == 'boletos' %}
+        <h2>Meus boletos</h2>
+        <div class="card">
+            {% if boletos %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th>Contrato</th>
+                        <th>Parcela</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for boleto in boletos %}
+                    <tr>
+                        <td>{{ boleto[0] }}</td>
+                        <td>{{ boleto[4] or '-' }}</td>
+                        <td>{{ boleto[5] or '-' }}</td>
+                        <td>{% if boleto[1] %}R$ {{ boleto[1] }}{% else %}-{% endif %}</td>
+                        <td>{{ boleto[2] or '-' }}</td>
+                        <td>
+                            {% if boleto[3] == "Pago" %}<span class="status pago">✅ Pago</span>
+                            {% elif boleto[3] == "Vencido" %}<span class="status vencido">🔴 Vencido</span>
+                            {% else %}<span class="status aberto">🟡 Em aberto</span>{% endif %}
+                        </td>
+                        <td><a class="botao" href="/baixar_boleto/{{ boleto[6] }}" target="_blank">Abrir</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="vazio">Nenhum boleto disponível no momento.</div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if pagina == 'pagamentos' %}
+        <h2>Pagamentos</h2>
+        <div class="card">
+            {% set pagos = boletos|selectattr(3, 'equalto', 'Pago')|list %}
+            {% if pagos %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th>Contrato</th>
+                        <th>Parcela</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for boleto in pagos %}
+                    <tr>
+                        <td>{{ boleto[0] }}</td>
+                        <td>{{ boleto[4] or '-' }}</td>
+                        <td>{{ boleto[5] or '-' }}</td>
+                        <td>{% if boleto[1] %}R$ {{ boleto[1] }}{% else %}-{% endif %}</td>
+                        <td>{{ boleto[2] or '-' }}</td>
+                        <td><a class="botao" href="/baixar_boleto/{{ boleto[6] }}" target="_blank">Abrir</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="vazio">Nenhum pagamento localizado no momento.</div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if pagina == 'relatorios' %}
+        <h2>Relatórios / Informes de Pagamentos</h2>
+        <div class="card">
+            {% if informes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ano</th>
+                        <th>Arquivo</th>
+                        <th>Enviado em</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for informe in informes %}
+                    <tr>
+                        <td>{{ informe[2] }}</td>
+                        <td>{{ informe[1] }}</td>
+                        <td>{{ informe[3] }}</td>
+                        <td><a class="botao" href="/baixar_informe/{{ informe[0] }}" target="_blank">Abrir</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="vazio">Nenhum relatório disponível no momento.</div>
+            {% endif %}
+        </div>
+    {% endif %}
+</main>
+</div>
 </body>
 </html>
