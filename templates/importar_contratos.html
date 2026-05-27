@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Importar Boletos</title>
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Importar Contratos</title>
 <style>
 * { box-sizing: border-box; }
 body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a; }
@@ -56,6 +56,7 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
     <a href="/upload_boleto">📄 Enviar boleto</a>
     <a href="/importar_boletos">📥 Importar boletos</a>
     <a href="/importar_baixas">✅ Importar baixas</a>
+    <a href="/importar_contratos">🏘 Importar contratos</a>
     <a href="/boletos_admin">📋 Boletos enviados</a>
     <a href="/upload_informe">📑 Enviar informe</a>
     <a href="/informes_admin">📚 Informes enviados</a>
@@ -64,15 +65,76 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 </aside>
 
 <main class="conteudo">
-    <div class="topo"><h1>📥 Importar boletos</h1><p>Planilha esperada: Nome / CPF / Contrato / Parcela / Vencimento / Valor / caminho do boleto.</p></div>
+    <div class="topo"><h1>🏘 Importar contratos</h1><p>Planilha esperada: CPF / NOME / CONTRATO / ENDERECO / INICIO_VIGENCIA / FIM_VIGENCIA / STATUS. Esta importação também cria/atualiza os clientes automaticamente.</p></div>
     {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
     <div class="card">
         <form method="POST" enctype="multipart/form-data">
+            <p>Use a planilha <b>Importar Contratos.xlsx</b>. Ao importar, o sistema cria ou atualiza automaticamente o cliente pelo CPF/CNPJ, vincula o contrato e preenche os dados em <b>Meus contratos</b>. A planilha separada de clientes passa a ser opcional.</p>
             <label>Planilha Excel</label>
             <input type="file" name="arquivo" accept=".xlsx,.xls" required>
-            <button class="botao" type="submit">Importar boletos</button>
+            <button class="botao" type="submit">Importar contratos</button>
         </form>
     </div>
+
+    {% if logs_importacao %}
+    <div class="card">
+        <h2>Histórico recente de importações</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Importados</th>
+                    <th>Atualizados</th>
+                    <th>Ignorados</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for log in logs_importacao %}
+                <tr>
+                    <td>{{ log[5] or '-' }}</td>
+                    <td>{{ log[1] or 0 }}</td>
+                    <td>{{ log[2] or 0 }}</td>
+                    <td>{{ log[3] or 0 }}</td>
+                    <td>{{ log[4] or '-' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if contratos %}
+    <div class="card">
+        <h2>Últimos contratos importados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Contrato</th>
+                    <th>Locatário</th>
+                    <th>CPF</th>
+                    <th>Endereço</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for contrato in contratos %}
+                <tr>
+                    <td>{{ contrato[0] or '-' }}</td>
+                    <td>{{ contrato[1] or '-' }}</td>
+                    <td>{{ contrato[2] or '-' }}</td>
+                    <td>{{ contrato[3] or '-' }}</td>
+                    <td>{{ formatar_data_br(contrato[4]) or '-' }}</td>
+                    <td>{{ formatar_data_br(contrato[5]) or '-' }}</td>
+                    <td>{{ contrato[6] or 'Ativo' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
     <a class="voltar" href="/admin">← Voltar ao painel</a>
 </main>
 </div>

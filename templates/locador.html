@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8"><link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}"><title>Portal do Locador</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#0f172a}.layout{display:flex;min-height:100vh}.menu{width:260px;background:#0f172a;color:white;padding:25px 18px}.menu a{display:block;color:#cbd5e1;text-decoration:none;padding:13px;border-radius:9px;margin-bottom:8px}.menu a:hover{background:#ef3b39;color:white}.menu .ativo{background:#2563eb;color:white}.conteudo{flex:1;padding:35px}.topo h1{margin:0;font-size:34px}.topo p{color:#64748b}.card{background:white;padding:28px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:20px}.cards-resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:25px}.numero{font-size:32px;font-weight:bold;color:#ef3b39;margin-top:10px}.botao,.botao-secundario{display:inline-block;background:#ef3b39;color:white;padding:10px 16px;border-radius:9px;text-decoration:none;font-weight:bold}.botao-secundario{background:#e2e8f0;color:#0f172a;margin-right:8px;margin-bottom:8px}table{width:100%;border-collapse:collapse;background:white}th{background:#f1f5f9;text-align:left;padding:14px;color:#334155}td{padding:14px;border-bottom:1px solid #e5e7eb;vertical-align:middle}.status{display:inline-block;padding:6px 12px;border-radius:20px;background:#d1fae5;color:#065f46;font-weight:bold;font-size:13px}.vazio{color:#64748b;padding:20px}.logo-area{text-align:center;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.10)}.logo-menu{width:145px;max-width:100%;display:block;margin:0 auto;background:white;border-radius:12px;padding:10px}@media(max-width:900px){.layout{flex-direction:column}.menu{width:100%}.cards-resumo{grid-template-columns:1fr}.conteudo{padding:20px}table{font-size:13px}}
+</style></head>
+<body><div class="layout">
+<aside class="menu">
+<div class="logo-area"><img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu"></div>
+<a class="{% if pagina == 'dashboard' %}ativo{% endif %}" href="/locador">🏠 Dashboard</a>
+<a class="{% if pagina == 'demonstrativos' %}ativo{% endif %}" href="/locador/demonstrativos">💼 Demonstrativos</a>
+<a class="{% if pagina == 'informes' %}ativo{% endif %}" href="/locador/informes">📑 Informes de rendimentos</a>
+<a class="{% if pagina == 'contratos' %}ativo{% endif %}" href="/locador/contratos">🏘 Contratos ativos</a>
+<a href="/logout">🚪 Sair</a>
+</aside>
+<main class="conteudo">
+<div class="topo"><h1>Portal do Locador</h1><p>Olá, {{ nome }}. Acesse seus demonstrativos, informes e contratos ativos.</p></div>
+{% if pagina == 'dashboard' %}
+<div class="cards-resumo">
+<div class="card"><h3>Demonstrativos</h3><div class="numero">{{ demonstrativos|length }}</div></div>
+<div class="card"><h3>Informes</h3><div class="numero">{{ informes_locador|length }}</div></div>
+<div class="card"><h3>Contratos ativos</h3><div class="numero">{{ contratos_locador|length }}</div></div>
+</div>
+<div class="card"><h2>Acesso rápido</h2><a class="botao-secundario" href="/locador/demonstrativos">Ver demonstrativos</a><a class="botao-secundario" href="/locador/informes">Ver informes</a><a class="botao-secundario" href="/locador/contratos">Ver contratos ativos</a></div>
+{% endif %}
+{% if pagina == 'demonstrativos' %}
+<h2>Demonstrativos de repasses</h2><div class="card">{% if demonstrativos %}<table><thead><tr><th>Competência</th><th>Data do repasse</th><th>Valor</th><th>Arquivo</th><th>Ação</th></tr></thead><tbody>{% for item in demonstrativos %}<tr><td>{{ item[2] or '-' }}</td><td>{{ formatar_data_br(item[3]) or '-' }}</td><td>{% if item[4] %}R$ {{ item[4] }}{% else %}-{% endif %}</td><td>{{ item[1] }}</td><td><a class="botao" href="/baixar_demonstrativo_locador/{{ item[0] }}" target="_blank">Abrir</a></td></tr>{% endfor %}</tbody></table>{% else %}<div class="vazio">Nenhum demonstrativo disponível no momento.</div>{% endif %}</div>
+{% endif %}
+{% if pagina == 'informes' %}
+<h2>Informes de rendimentos</h2><div class="card">{% if informes_locador %}<table><thead><tr><th>Ano</th><th>Arquivo</th><th>Enviado em</th><th>Ação</th></tr></thead><tbody>{% for item in informes_locador %}<tr><td>{{ item[2] }}</td><td>{{ item[1] }}</td><td>{{ item[3] }}</td><td><a class="botao" href="/baixar_informe_locador/{{ item[0] }}" target="_blank">Abrir</a></td></tr>{% endfor %}</tbody></table>{% else %}<div class="vazio">Nenhum informe disponível no momento.</div>{% endif %}</div>
+{% endif %}
+{% if pagina == 'contratos' %}
+<h2>Contratos ativos</h2><div class="card">{% if contratos_locador %}<table><thead><tr><th>Contrato</th><th>Endereço</th><th>Locatário</th><th>CPF locatário</th><th>Início</th><th>Fim</th><th>Status</th></tr></thead><tbody>{% for c in contratos_locador %}<tr><td>{{ c[0] }}</td><td>{{ c[1] or '-' }}</td><td>{{ c[2] or '-' }}</td><td>{{ c[3] or '-' }}</td><td>{{ formatar_data_br(c[4]) or '-' }}</td><td>{{ formatar_data_br(c[5]) or '-' }}</td><td><span class="status">{{ c[6] or 'Ativo' }}</span></td></tr>{% endfor %}</tbody></table>{% else %}<div class="vazio">Nenhum contrato ativo disponível no momento.</div>{% endif %}</div>
+{% endif %}
+</main></div></body></html>

@@ -17,7 +17,7 @@ body { margin:0; font-family:Arial,sans-serif; background:#f4f6f9; color:#0f172a
 .botao { display:inline-block; background:#2563eb; color:white; padding:10px 16px; border-radius:9px; border:none; text-decoration:none; font-weight:bold; cursor:pointer; }
 .botao:hover { background:#1d4ed8; }
 .botao-secundario { display:inline-block; background:#e2e8f0; color:#0f172a; padding:13px 20px; border-radius:9px; text-decoration:none; font-weight:bold; margin-right:8px; margin-bottom:8px; }
-.cards-resumo { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:25px; }
+.cards-resumo { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:25px; }
 .numero { font-size:32px; font-weight:bold; margin-top:12px; color:#2563eb; }
 table { width:100%; border-collapse:collapse; background:white; }
 th { background:#f1f5f9; text-align:left; padding:14px; color:#334155; }
@@ -29,7 +29,7 @@ td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
 .vazio { color:#64748b; padding:20px; }
 
 .logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
-.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.logo-menu { width:145px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:6px; }
 .menu a:hover { background:#ef3b39; color:white; }
 .menu .ativo { background:#2563eb; color:white; }
 .botao { background:#ef3b39 !important; }
@@ -50,22 +50,24 @@ td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
     <a class="{% if pagina == 'boletos' %}ativo{% endif %}" href="/locatario/boletos">📄 Boletos</a>
     <a class="{% if pagina == 'pagamentos' %}ativo{% endif %}" href="/locatario/pagamentos">💰 Pagamentos</a>
     <a class="{% if pagina == 'relatorios' %}ativo{% endif %}" href="/locatario/relatorios">📑 Relatórios</a>
+    <a class="{% if pagina == 'contratos' %}ativo{% endif %}" href="/locatario/contratos">🏘 Meus contratos</a>
     <a href="/logout">🚪 Sair</a>
 </aside>
 <main class="conteudo">
     <div class="topo">
         <h1>Portal do Locatário</h1>
-        <p>Olá, {{ nome }}. Acesse seus boletos, pagamentos e relatórios.</p>
+        <p>Olá, {{ nome }}. Acesse seus boletos, pagamentos, relatórios e contratos.</p>
     </div>
 
     {% set total_abertos = boletos|selectattr(3, 'equalto', 'Em aberto')|list|length %}
-    {% set total_pagos = boletos|selectattr(3, 'equalto', 'Pago')|list|length %}
+    {% set total_pagos = (boletos|selectattr(3, 'equalto', 'Pago')|list|length) + (boletos|selectattr(3, 'equalto', 'Pago com divergência')|list|length) %}
 
     {% if pagina == 'dashboard' %}
         <div class="cards-resumo">
             <div class="card"><h3>Boletos disponíveis</h3><div class="numero">{{ boletos|length }}</div></div>
             <div class="card"><h3>Em aberto</h3><div class="numero">{{ total_abertos }}</div></div>
             <div class="card"><h3>Relatórios</h3><div class="numero">{{ informes|length }}</div></div>
+            <div class="card"><h3>Contratos ativos</h3><div class="numero">{{ contratos|length }}</div></div>
         </div>
         <div class="card">
             <h2>Acesso rápido</h2>
@@ -73,6 +75,7 @@ td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
             <a class="botao-secundario" href="/locatario/boletos">Ver boletos</a>
             <a class="botao-secundario" href="/locatario/pagamentos">Ver pagamentos</a>
             <a class="botao-secundario" href="/locatario/relatorios">Ver relatórios</a>
+            <a class="botao-secundario" href="/locatario/contratos">Ver contratos</a>
         </div>
     {% endif %}
 
@@ -101,7 +104,7 @@ td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
                         <td>{% if boleto[1] %}R$ {{ boleto[1] }}{% else %}-{% endif %}</td>
                         <td>{{ boleto[2] or '-' }}</td>
                         <td>
-                            {% if boleto[3] == "Pago" %}<span class="status pago">✅ Pago</span>
+                            {% if boleto[3] == "Pago" or boleto[3] == "Pago com divergência" %}<span class="status pago">✅ Pago</span>
                             {% elif boleto[3] == "Vencido" %}<span class="status vencido">🔴 Vencido</span>
                             {% else %}<span class="status aberto">🟡 Em aberto</span>{% endif %}
                         </td>
@@ -119,7 +122,7 @@ td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
     {% if pagina == 'pagamentos' %}
         <h2>Pagamentos</h2>
         <div class="card">
-            {% set pagos = boletos|selectattr(3, 'equalto', 'Pago')|list %}
+            {% set pagos = (boletos|selectattr(3, 'equalto', 'Pago')|list) + (boletos|selectattr(3, 'equalto', 'Pago com divergência')|list) %}
             {% if pagos %}
             <table>
                 <thead>
@@ -180,6 +183,39 @@ td { padding:14px; border-bottom:1px solid #e5e7eb; vertical-align:middle; }
             {% endif %}
         </div>
     {% endif %}
+
+    {% if pagina == 'contratos' %}
+        <h2>Meus contratos</h2>
+        <div class="card">
+            {% if contratos %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Contrato</th>
+                        <th>Endereço do imóvel</th>
+                        <th>Início da vigência</th>
+                        <th>Fim da vigência</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for contrato in contratos %}
+                    <tr>
+                        <td>{{ contrato[0] or '-' }}</td>
+                        <td>{{ contrato[1] or '-' }}</td>
+                        <td>{{ formatar_data_br(contrato[2]) or '-' }}</td>
+                        <td>{{ formatar_data_br(contrato[3]) or '-' }}</td>
+                        <td><span class="status pago">{{ contrato[4] or 'Ativo' }}</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="vazio">Nenhum contrato disponível no momento.</div>
+            {% endif %}
+        </div>
+    {% endif %}
+
 </main>
 </div>
 </body>

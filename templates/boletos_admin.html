@@ -29,9 +29,10 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 .pago { background:#d1fae5; color:#065f46; }
 .aberto { background:#fef3c7; color:#92400e; }
 .vencido { background:#fee2e2; color:#991b1b; }
+.divergencia { background:#fef3c7; color:#92400e; }
 
 .logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
-.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.logo-menu { width:145px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:6px; }
 .menu a:hover { background:#ef3b39; color:white; }
 .menu .ativo { background:#2563eb; color:white; }
 .botao { background:#ef3b39 !important; }
@@ -67,6 +68,7 @@ th{
     <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
     <a href="/upload_boleto">📄 Enviar boleto</a>
     <a href="/importar_boletos">📥 Importar boletos</a>
+    <a href="/importar_baixas">✅ Importar baixas</a>
     <a href="/boletos_admin">📋 Boletos enviados</a>
     <a href="/upload_informe">📑 Enviar informe</a>
     <a href="/informes_admin">📚 Informes enviados</a>
@@ -90,7 +92,7 @@ th{
     <div class="card">
         <div class="tabela-scroll">
     <table>
-            <tr><th>Arquivo</th><th>Locatário</th><th>Contrato</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ação</th></tr>
+            <tr><th>Arquivo</th><th>Locatário</th><th>Contrato</th><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Pagamento</th><th>Ação</th></tr>
             {% for boleto in boletos %}
             <tr>
                 <td>📄 {{ boleto[1] }}</td>
@@ -101,11 +103,18 @@ th{
                 <td>{{ boleto[4] or '-' }}</td>
                 <td>
                     {% if boleto[5] == "Pago" %}<span class="status pago">✅ Pago</span>
+                    {% elif boleto[5] == "Pago com divergência" %}<span class="status divergencia">⚠️ Pago com divergência</span>
                     {% elif boleto[5] == "Vencido" %}<span class="status vencido">🔴 Vencido</span>
                     {% else %}<span class="status aberto">🟡 Em aberto</span>{% endif %}
                 </td>
                 <td>
-    {% if boleto[5] != "Pago" %}
+                    {% if boleto[8] %}<strong>Data:</strong> {{ boleto[8] }}<br>{% endif %}
+                    {% if boleto[9] %}<strong>Valor:</strong> R$ {{ boleto[9] }}<br>{% endif %}
+                    {% if boleto[10] %}<strong>Origem:</strong> {{ boleto[10] }}{% endif %}
+                    {% if not boleto[8] and not boleto[9] and not boleto[10] %}-{% endif %}
+                </td>
+                <td>
+    {% if boleto[5] != "Pago" and boleto[5] != "Pago com divergência" %}
         <a class="voltar" href="/marcar_pago/{{ boleto[0] }}">Marcar pago</a>
         <br>
     {% else %}

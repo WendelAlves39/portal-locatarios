@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}">
-    <title>Portal do Locatário - Xangai Imóveis</title>
+    <title>Portal Xangai Imóveis</title>
     <style>
         *{box-sizing:border-box}
         body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1f2937 45%,#f4f6f9 45%,#f4f6f9 100%);display:flex;align-items:center;justify-content:center;color:#0f172a}
         .login-box{width:410px;background:white;padding:34px;border-radius:18px;box-shadow:0 12px 35px rgba(15,23,42,.22)}
-        .logo{display:block;width:230px;max-width:100%;margin:0 auto 20px auto}
+        .logo{display:block;width:180px;max-width:100%;margin:0 auto 20px auto}
         h1{text-align:center;color:#0f172a;margin:0 0 6px 0;font-size:26px}
         .subtitulo{text-align:center;color:#64748b;margin:0 0 24px 0}
         input{width:100%;padding:14px;margin-top:10px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}
@@ -23,8 +23,8 @@
 <body>
 <div class="login-box">
     <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo">
-    <h1>Portal do Locatário</h1>
-    <p class="subtitulo">Acesse seus boletos, pagamentos e informes.</p>
+    <h1>Portal Xangai Imóveis</h1>
+    <p class="subtitulo">Escolha seu perfil e acesse suas informações.</p>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -35,6 +35,11 @@
     {% endwith %}
 
     <form method="POST">
+        <label style="display:block;margin-top:10px;font-weight:bold;color:#334155;">Perfil de acesso</label>
+        <select name="perfil" required style="width:100%;padding:14px;margin-top:8px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;background:white;">
+            <option value="locatario">Inquilino / Locatário</option>
+            <option value="locador">Proprietário / Locador</option>
+        </select>
         <input type="text" name="cpf" placeholder="CPF" required>
         <input type="password" name="senha" placeholder="Senha" required>
         <button type="submit">Entrar</button>

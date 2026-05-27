@@ -20,7 +20,7 @@ label { display:block; margin-bottom:8px; font-weight:bold; }
 .botao:hover { background:#1d4ed8; }
 .voltar { display:inline-block; margin-top:20px; color:#2563eb; text-decoration:none; font-weight:bold; }
 .msg { background:#d1fae5; color:#065f46; padding:14px; border-radius:10px; margin-bottom:20px; font-weight:bold; }
-.cards-resumo,.cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:25px; }
+.cards-resumo,.cards { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:25px; }
 .numero { font-size:32px; font-weight:bold; margin-top:12px; color:#2563eb; }
 table { width:100%; border-collapse:collapse; background:white; }
 th { background:#f1f5f9; text-align:left; padding:16px; color:#334155; }
@@ -31,13 +31,34 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 .vencido { background:#fee2e2; color:#991b1b; }
 
 .logo-area { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.10); }
-.logo-menu { width:185px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:10px; }
+.logo-menu { width:145px; max-width:100%; display:block; margin:0 auto; background:white; border-radius:12px; padding:6px; }
 .menu a:hover { background:#ef3b39; color:white; }
 .menu .ativo { background:#2563eb; color:white; }
 .botao { background:#ef3b39 !important; }
 .botao:hover { background:#d92f2d !important; }
 .numero { color:#ef3b39 !important; }
 .voltar { color:#ef3b39 !important; }
+
+
+.menu-grupo {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 18px 0 6px 8px;
+    text-transform: uppercase;
+}
+
+.submenu {
+    padding-left: 28px !important;
+    font-size: 14px;
+}
+
+.acoes-rapidas{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:20px;
+}
 
 @media(max-width:900px){.layout{flex-direction:column}.menu{width:100%}.cards-resumo,.cards{grid-template-columns:1fr}}
 </style>
@@ -46,38 +67,104 @@ td { padding:16px; border-bottom:1px solid #e5e7eb; }
 <div class="layout">
 
 <aside class="menu">
+
     <div class="logo-area">
-    <img src="{{ url_for('static', filename='img/logo_xangai.png') }}" alt="Xangai Imóveis" class="logo-menu">
-</div>
+        <img src="{{ url_for('static', filename='img/logo_xangai.png') }}"
+             alt="Xangai Imóveis"
+             class="logo-menu">
+    </div>
+
     <a href="/admin">🏠 Dashboard</a>
+
     <a href="/cadastro_admin">👮 Cadastrar administrador</a>
+
     <a href="/clientes_admin">👥 Clientes cadastrados</a>
+
     <a href="/cadastro_locatario">👤 Cadastrar locatário</a>
-    <a href="/upload_boleto">📄 Enviar boleto</a>
-    <a href="/importar_boletos">📥 Importar boletos</a>
-    <a href="/boletos_admin">📋 Boletos enviados</a>
-    <a href="/upload_informe">📑 Enviar informe</a>
-    <a href="/informes_admin">📚 Informes enviados</a>
+
+    <a href="/importar_locadores">🏢 Importar locadores</a>
+
+    <a href="/importar_contratos">🏘 Importar contratos</a>
+
+    <div class="menu-grupo">📄 Boletos</div>
+
+    <a class="submenu" href="/upload_boleto">
+        Enviar boleto
+    </a>
+
+    <a class="submenu" href="/importar_boletos">
+        Importar boletos
+    </a>
+
+    <a class="submenu" href="/boletos_admin">
+        Boletos enviados
+    </a>
+
+    <a class="submenu" href="/importar_baixas">
+        ✅ Importar baixas
+    </a>
+
+    <div class="menu-grupo">📑 Informes</div>
+
+    <a class="submenu" href="/upload_informe">
+        Enviar informe
+    </a>
+
+    <a class="submenu" href="/importar_informes">
+        Importar informes
+    </a>
+
+    <a class="submenu" href="/informes_admin">
+        Informes enviados
+    </a>
+
+    <div class="menu-grupo">🏠 Locador</div>
+
+    <a class="submenu" href="/importar_demonstrativos_locador">
+        Importar demonstrativos
+    </a>
+
+    <a class="submenu" href="/importar_informes_locador">
+        Importar informes
+    </a>
+
+    <a class="submenu" href="/importar_contratos_locador">
+        Importar contratos
+    </a>
+
     <a href="/configuracoes">⚙ Configurações</a>
+
     <a href="/logout">🚪 Sair</a>
+
 </aside>
 
 <main class="conteudo">
     <div class="topo">
         <h1>Painel Administrativo</h1>
-        <p>Olá, {{ nome }}. Gerencie locatários, boletos e relatórios.</p>
+        <p>Olá, {{ nome }}. Gerencie locatários, locadores, boletos, demonstrativos e relatórios.</p>
     </div>
     <div class="cards-resumo">
         <div class="card"><h3>Locatários cadastrados</h3><div class="numero">{{ total_locatarios }}</div></div>
+        <div class="card"><h3>Locadores cadastrados</h3><div class="numero">{{ total_locadores }}</div></div>
         <div class="card"><h3>Boletos enviados</h3><div class="numero">{{ total_boletos }}</div></div>
-        <div class="card"><h3>Informes enviados</h3><div class="numero">{{ total_informes }}</div></div>
+        <div class="card"><h3>Informes locatários</h3><div class="numero">{{ total_informes }}</div></div>
+        <div class="card"><h3>Contratos locatários</h3><div class="numero">{{ total_contratos }}</div></div>
+        <div class="card"><h3>Demonstrativos locador</h3><div class="numero">{{ total_demonstrativos_locador }}</div></div>
+        <div class="card"><h3>Contratos locador</h3><div class="numero">{{ total_contratos_locador }}</div></div>
     </div>
     <div class="card">
         <h2>Ações rápidas</h2>
+        <div class="acoes-rapidas">
         <a class="botao" href="/cadastro_locatario">Cadastrar ou importar locatários</a>
         <a class="botao" href="/importar_boletos">Importar boletos</a>
+        <a class="botao" href="/importar_baixas">Importar baixas</a>
+        <a class="botao" href="/importar_contratos">Importar contratos</a>
         <a class="botao" href="/upload_boleto">Enviar boleto manual</a>
         <a class="botao" href="/upload_informe">Enviar informe</a>
+        <a class="botao" href="/importar_locadores">Importar locadores</a>
+        <a class="botao" href="/importar_demonstrativos_locador">Importar demonstrativos locador</a>
+        <a class="botao" href="/importar_contratos_locador">Importar contratos locador</a>
+        </div>
     </div>
 </main>
 </div>

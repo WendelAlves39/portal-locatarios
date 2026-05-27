@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 .env
 .idea/
+.git/
 portal.db
+*.db
 uploads/
 ignorados.txt
+contratos_ignorados.txt
+informes_ignorados.txt
